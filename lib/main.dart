@@ -8,7 +8,7 @@ import 'widgets/mole_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MainApp())
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -59,7 +59,7 @@ class _GameCoordinatorState extends State<GameCoordinator> {
     super.initState();
     _controller = GameController();
     _controller.addListener(_onStateChange);
-    
+
     // Load AI-drawn mole images on startup
     MoleImageCache.loadImages().then((_) {
       if (mounted) {
@@ -91,7 +91,9 @@ class _GameCoordinatorState extends State<GameCoordinator> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFEC407A)), // Pink loader
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Color(0xFFEC407A),
+              ), // Pink loader
               strokeWidth: 5,
             ),
             SizedBox(height: 24),
@@ -117,7 +119,7 @@ class _GameCoordinatorState extends State<GameCoordinator> {
     }
 
     Widget activeScreen;
-    
+
     switch (_controller.state) {
       case GameState.home:
         activeScreen = HomeScreen(controller: _controller);
@@ -167,17 +169,17 @@ class _GameCoordinatorState extends State<GameCoordinator> {
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-              child: Container(
-                color: Colors.black.withOpacity(0.4),
-              ),
+              child: Container(color: Colors.black.withOpacity(0.4)),
             ),
           ),
-          
+
           // Pause Panel
           Center(
             child: ScaleTransition(
               scale: CurvedAnimation(
-                parent: ModalRoute.of(context)?.animation ?? const AlwaysStoppedAnimation(1.0),
+                parent:
+                    ModalRoute.of(context)?.animation ??
+                    const AlwaysStoppedAnimation(1.0),
                 curve: Curves.easeOutBack,
               ),
               child: Container(
@@ -192,7 +194,7 @@ class _GameCoordinatorState extends State<GameCoordinator> {
                       color: Colors.black26,
                       blurRadius: 10,
                       offset: Offset(0, 5),
-                    )
+                    ),
                   ],
                 ),
                 child: Column(
@@ -244,7 +246,7 @@ class _GameCoordinatorState extends State<GameCoordinator> {
                               BoxShadow(
                                 color: const Color(0xFF4CAF50).withOpacity(0.3),
                                 offset: const Offset(0, 3),
-                              )
+                              ),
                             ],
                           ),
                           child: const Center(
@@ -280,7 +282,7 @@ class _GameCoordinatorState extends State<GameCoordinator> {
                               BoxShadow(
                                 color: const Color(0xFFE57373).withOpacity(0.3),
                                 offset: const Offset(0, 3),
-                              )
+                              ),
                             ],
                           ),
                           child: const Center(
