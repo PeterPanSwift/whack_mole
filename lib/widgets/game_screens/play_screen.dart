@@ -21,14 +21,19 @@ class PlayScreen extends StatefulWidget {
   State<PlayScreen> createState() => _PlayScreenState();
 }
 
-class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateMixin {
-  final GlobalKey<ParticleEffectLayerState> _particleKey = GlobalKey<ParticleEffectLayerState>();
-  final GlobalKey<HammerWidgetState> _hammerKey = GlobalKey<HammerWidgetState>();
+class _PlayScreenState extends State<PlayScreen>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey<ParticleEffectLayerState> _particleKey =
+      GlobalKey<ParticleEffectLayerState>();
+  final GlobalKey<HammerWidgetState> _hammerKey =
+      GlobalKey<HammerWidgetState>();
   final GlobalKey _stackKey = GlobalKey();
 
   // Screen shake state
   double _shakeOffset = 0.0;
   Timer? _shakeTimer;
+
+  // add two numbers
 
   @override
   void initState() {
@@ -69,7 +74,8 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
           timer.cancel();
         } else {
           // Alternating shake offset
-          _shakeOffset = (ticks % 2 == 0 ? 1 : -1) * maxOffset * (1 - ticks / maxTicks);
+          _shakeOffset =
+              (ticks % 2 == 0 ? 1 : -1) * maxOffset * (1 - ticks / maxTicks);
           ticks++;
         }
       });
@@ -80,9 +86,10 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
     if (widget.controller.state != GameState.playing) return;
 
     // Convert global coordinate of tap to local coordinate of the main Stack
-    final RenderBox? stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? stackBox =
+        _stackKey.currentContext?.findRenderObject() as RenderBox?;
     if (stackBox == null) return;
-    
+
     final Offset localPos = stackBox.globalToLocal(details.globalPosition);
 
     // 1. Play Hammer Animation
@@ -114,9 +121,10 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
     // Handled when user taps outside the mole grid (e.g. missed completely)
     if (widget.controller.state != GameState.playing) return;
 
-    final RenderBox? stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? stackBox =
+        _stackKey.currentContext?.findRenderObject() as RenderBox?;
     if (stackBox == null) return;
-    
+
     final Offset localPos = stackBox.globalToLocal(details.globalPosition);
 
     // Play hammer swing
@@ -135,11 +143,9 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
     }
   }
 
-
-
   Widget _buildHUD(BuildContext context) {
     final controller = widget.controller;
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -161,10 +167,7 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
             ),
             child: Row(
               children: [
-                const Text(
-                  "⭐ ",
-                  style: TextStyle(fontSize: 18),
-                ),
+                const Text("⭐ ", style: TextStyle(fontSize: 18)),
                 Text(
                   "得分: ${controller.score}",
                   style: const TextStyle(
@@ -180,9 +183,7 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
           const SizedBox(width: 15),
 
           // Custom animated Progress Bar
-          Expanded(
-            child: _buildTimeProgressBar(),
-          ),
+          Expanded(child: _buildTimeProgressBar()),
 
           const SizedBox(width: 15),
 
@@ -216,14 +217,19 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
   }
 
   Widget _buildTimeProgressBar() {
-    final double progress = (widget.controller.timeLeft / GameController.gameDurationSeconds).clamp(0.0, 1.0);
-    
+    final double progress =
+        (widget.controller.timeLeft / GameController.gameDurationSeconds).clamp(
+          0.0,
+          1.0,
+        );
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final double barWidth = constraints.maxWidth;
         // Calculate mole runner position along the progress bar
-        final double runnerPos = barWidth * progress - 16; // Adjust offset to center runner image
-        
+        final double runnerPos =
+            barWidth * progress - 16; // Adjust offset to center runner image
+
         return Stack(
           alignment: Alignment.centerLeft,
           clipBehavior: Clip.none,
@@ -271,10 +277,7 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
                   ],
                 ),
                 child: const Center(
-                  child: Text(
-                    "🐹",
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  child: Text("🐹", style: TextStyle(fontSize: 18)),
                 ),
               ),
             ),
@@ -286,11 +289,14 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
 
   Widget _buildComboBadge() {
     final controller = widget.controller;
-    if (controller.combo == 0) return const SizedBox(height: 48); // Fixed height to prevent layout jump
+    if (controller.combo == 0)
+      return const SizedBox(height: 48); // Fixed height to prevent layout jump
 
     // Fever Mode visual enhancements
     final double comboScale = 1.0 + min(0.4, controller.combo * 0.03);
-    final Color comboColor = controller.isFeverMode ? const Color(0xFFFF4081) : const Color(0xFFAB47BC);
+    final Color comboColor = controller.isFeverMode
+        ? const Color(0xFFFF4081)
+        : const Color(0xFFAB47BC);
 
     return Transform.scale(
       scale: comboScale,
@@ -309,9 +315,9 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
           ],
         ),
         child: Text(
-          controller.isFeverMode 
-            ? "🔥 FEVER COMBO x${controller.combo} 🔥"
-            : "COMBO x${controller.combo}",
+          controller.isFeverMode
+              ? "🔥 FEVER COMBO x${controller.combo} 🔥"
+              : "COMBO x${controller.combo}",
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w900,
@@ -323,12 +329,10 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
     );
   }
 
-
-
   // Rewriting the grid item to catch TapDownDetails
   Widget _buildGridBoardItem(int index) {
     final mole = widget.controller.moles[index];
-    
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) => _handleTapHole(index, details),
@@ -381,7 +385,7 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final controller = widget.controller;
-    final Color boardBg = controller.isFeverMode 
+    final Color boardBg = controller.isFeverMode
         ? const Color(0xFFFFF3E0) // Warm fever pastel orange
         : const Color(0xFFE8F5E9); // Mint green normal
 
@@ -393,9 +397,7 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: _handleBackgroundTap,
-            child: Container(
-              color: boardBg,
-            ),
+            child: Container(color: boardBg),
           ),
 
           // 2. Fever Mode Rainbow Border Pulse
@@ -407,20 +409,18 @@ class _PlayScreenState extends State<PlayScreen> with SingleTickerProviderStateM
               children: [
                 const SizedBox(height: 12),
                 _buildHUD(context),
-                
+
                 const Spacer(),
 
                 // Combo Badge
                 _buildComboBadge(),
-                
+
                 const SizedBox(height: 10),
 
                 // Whacking Board with Screen Shake Translation
                 Transform.translate(
                   offset: Offset(_shakeOffset, 0),
-                  child: Center(
-                    child: _buildGridBoardCustom(context),
-                  ),
+                  child: Center(child: _buildGridBoardCustom(context)),
                 ),
 
                 const Spacer(flex: 2),
@@ -446,7 +446,8 @@ class FeverBorderPulse extends StatefulWidget {
   State<FeverBorderPulse> createState() => _FeverBorderPulseState();
 }
 
-class _FeverBorderPulseState extends State<FeverBorderPulse> with SingleTickerProviderStateMixin {
+class _FeverBorderPulseState extends State<FeverBorderPulse>
+    with SingleTickerProviderStateMixin {
   late AnimationController _borderController;
   late Animation<Color?> _colorAnimation;
 
@@ -487,7 +488,7 @@ class _FeverBorderPulseState extends State<FeverBorderPulse> with SingleTickerPr
                   color: (_colorAnimation.value ?? Colors.red).withOpacity(0.2),
                   blurRadius: 20,
                   spreadRadius: 8,
-                )
+                ),
               ],
             ),
           ),
